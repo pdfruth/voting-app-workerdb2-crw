@@ -14,6 +14,15 @@ components:
         containerPath: /home/jboss/.venv
     alias: python
     image: 'registry.redhat.io/codeready-workspaces/plugin-java8-rhel8:2.15'
+    env:
+      - name: REDIS_HOST
+        value: new-redis.pdf-voting-app-demo.svc.cluster.local
+      - name: DB_NAME
+        value: db
+      - name: DB_USER
+        value: admin
+      - name: DB_PASS
+        value: admin
 commands:
   - name: 1. Install requirements
     actions:
@@ -21,7 +30,6 @@ commands:
         type: exec
         command: python -m venv .venv && . .venv/bin/activate && python -m pip install --upgrade pip && python -m pip install -r requirements.txt
         component: python
-
   - name: 1. Run
     actions:
       - workdir: '${CHE_PROJECTS_ROOT}/voting-app-worker-crw'
