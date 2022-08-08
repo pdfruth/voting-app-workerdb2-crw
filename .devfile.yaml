@@ -1,6 +1,6 @@
 apiVersion: 1.0.0
 metadata:
-  name: voting-app-worker-crw
+  name: voting-app-workerpg-crw
 components:
   - id: ms-python/python/latest
     preferences:
@@ -17,6 +17,10 @@ components:
     env:
       - name: REDIS_HOST
         value: new-redis.pdf-voting-app-demo.svc.cluster.local
+      - name: REDIS_PASSWORD
+        value: admin
+      - name: POSTGRES_SERVICE_HOST
+        value: new-postgresql.pdf-voting-app-demo.svc.cluster.local
       - name: DB_NAME
         value: db
       - name: DB_USER
