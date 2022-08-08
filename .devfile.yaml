@@ -30,13 +30,13 @@ components:
 commands:
   - name: 1. Install requirements
     actions:
-      - workdir: '${CHE_PROJECTS_ROOT}/voting-app-worker-crw'
+      - workdir: '${CHE_PROJECTS_ROOT}/voting-app-workerpg-crw'
         type: exec
         command: python -m venv .venv && . .venv/bin/activate && python -m pip install --upgrade pip && python -m pip install -r requirements.txt
         component: python
   - name: 1. Run
     actions:
-      - workdir: '${CHE_PROJECTS_ROOT}/voting-app-worker-crw'
+      - workdir: '${CHE_PROJECTS_ROOT}/voting-app-workerpg-crw'
         type: exec
         command: python -m venv .venv && . .venv/bin/activate && python app.py
         component: python
