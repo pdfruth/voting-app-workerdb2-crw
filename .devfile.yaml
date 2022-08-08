@@ -1,6 +1,6 @@
 apiVersion: 1.0.0
 metadata:
-  name: voting-app-workerpg-crw
+  name: voting-app-workerdb2-crw
 components:
   - id: ms-python/python/latest
     preferences:
@@ -30,13 +30,13 @@ components:
 commands:
   - name: 1. Install requirements
     actions:
-      - workdir: '${CHE_PROJECTS_ROOT}/voting-app-workerpg-crw'
+      - workdir: '${CHE_PROJECTS_ROOT}/voting-app-workerdb2-crw'
         type: exec
         command: python -m venv .venv && . .venv/bin/activate && python -m pip install --upgrade pip && python -m pip install -r requirements.txt
         component: python
   - name: 1. Run
     actions:
-      - workdir: '${CHE_PROJECTS_ROOT}/voting-app-workerpg-crw'
+      - workdir: '${CHE_PROJECTS_ROOT}/voting-app-workerdb2-crw'
         type: exec
         command: python -m venv .venv && . .venv/bin/activate && python app.py
         component: python
