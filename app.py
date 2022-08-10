@@ -9,7 +9,7 @@ import json
 def get_redis():
    redishost = os.environ.get('REDIS_HOST', 'new-redis')
    redispassword = os.environ.get('REDIS_PASSWORD', 'password')
-   print ("Connecting to Redis using " + redishost)
+   print ("Connecting to Redis using hostname: " + redishost)
    #redis_conn = Redis(host=redishost, db=0, socket_timeout=5)
    redis_conn = Redis(host=redishost, db=0, socket_timeout=5, password=redispassword)
    redis_conn.ping()
@@ -35,7 +35,7 @@ def connect_db2():
       "PWD={6};").format(dsn_dr, dsn_db, dsn_hn, dsn_pt, dsn_prt, dsn_uid, dsn_pw)
 
    try:
-      print ("connecting to the DB2") 
+      print ("connecting to the DB2 using connect string: " + dsn)
       conn = ibm_db.connect(dsn, "", "")
       print ("Successfully connected to DB2")
       
