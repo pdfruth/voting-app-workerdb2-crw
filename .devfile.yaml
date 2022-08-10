@@ -20,14 +20,16 @@ components:
         value: new-redis.pdf-voting-app-demo.svc.cluster.local
       - name: REDIS_PASSWORD
         value: admin
-      - name: POSTGRES_SERVICE_HOST
-        value: new-postgresql.pdf-voting-app-demo.svc.cluster.local
-      - name: DB_NAME
-        value: db
-      - name: DB_USER
-        value: admin
-      - name: DB_PASS
-        value: admin
+      - name: DB2_HOSTNAME
+        value: localhost
+      - name: DB2_PORT
+        value: '50000'
+      - name: DB2_DATABASE
+        value: SAMPLEDB
+      - name: DB2_USER
+        value: db2inst1
+      - name: DB2_PASSWORD
+        value: passw0rd
 commands:
   - name: 1. Install requirements
     actions:
