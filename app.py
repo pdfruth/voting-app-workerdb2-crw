@@ -3,7 +3,7 @@
 from redis import Redis
 import os
 import time
-import psycopg2
+import ibm_db
 import json
 
 def get_redis():
@@ -16,81 +16,85 @@ def get_redis():
    print ("connected to redis!") 
    return redis_conn
 
-def connect_postgres(): 
-   host = os.getenv('POSTGRES_SERVICE_HOST', "new-postgresql")
-   db_name = os.getenv('DB_NAME', "db") 
-   db_user = os.getenv('DB_USER', "admin") 
-   db_pass = os.getenv('DB_PASS', "admin") 
+def connect_db2(): 
+   dsn_dr=os.environ.get('DB2_DRIVER', 'IBM DB2 ODBC DRIVER')
+   dsn_db=os.environ.get('DB2_DATABASE','SAMPLEDB')
+   dsn_hn=os.environ.get('DB2_HOSTNAME','localhost')
+   dsn_pt=os.environ.get('DB2_PORT', '50000')
+   dsn_prt=os.environ.get('DB2_PROTOCOL', 'TCPIP')
+   dsn_uid=os.environ.get('DB2_USER', 'db2inst1')
+   dsn_pw=os.environ.get('DB2_PASSWORD', 'passw0rd')
+
+   dsn = (
+      "DRIVER={0};"
+      "DATABASE={1};"
+      "HOSTNAME={2};"
+      "PORT={3};"
+      "PROTOCOL={4};"
+      "UID={5};"
+      "PWD={6};").format(dsn_dr, dsn_db, dsn_hn, dsn_pt, dsn_prt, dsn_uid, dsn_pw)
+
    try:
-      print ("connecting to the DB") 
-      conn = psycopg2.connect ("host={} dbname={} user={} password={}".format(host, db_name, db_user, db_pass))
-      print ("Successfully connected to Postgres")
+      print ("connecting to the DB2") 
+      conn = ibm_db.connect(dsn, "", "")
+      print ("Successfully connected to DB2")
       
       return conn 
 
    except Exception as e:
-      print ("error connecting to the DB")
+      print ("error connecting to the DB2")
       print (e)
 
-def create_postgres_table():
+def create_db2_table():
     try: 
-       conn = connect_postgres()
+       conn = connect_db2()
 
     except Exception as e:
-       print ("error connecting to postgres")  
+       print ("error connecting to DB2")  
        print (str(e)) 
 
     try:
-       cursor = conn.cursor()
-       sqlCreateTable = "CREATE TABLE IF NOT EXISTS public.votes (id VARCHAR(255) NOT NULL, vote VARCHAR(255) NOT NULL);"
-       cursor.execute(sqlCreateTable)
+       ibm_db.exec_immediate(conn, "CREATE TABLE IF NOT EXISTS votes (id VARCHAR(255) NOT NULL, vote VARCHAR(255) NOT NULL)")
        print ("votes table created") 
-       conn.commit()
-       cursor.close() 
 
     except Exception as e:
        print ("error creating database table")
        print (e)
 
     try:
-      conn.close()
+      ibm_db.close(conn)
 
     except Exception as e:
-       print ("error closing connection to postgres")
+       print ("error closing connection to DB2")
        print (str(e))
 
 
-def insert_postgres(data):
+def insert_db2(data):
     try:
-       conn = connect_postgres()
+       conn = connect_db2()
 
     except Exception as e:
-       print ("error connecting to postgres")  
+       print ("error connecting to DB2")  
        print (str(e)) 
 
 
     try:
-       cur = conn.cursor()
-       cur.execute("insert into votes values (%s, %s)",
-       (
-          data.get("voter_id"),
-          data.get("vote")
-       ))
-       conn.commit()
+       insert_sql = "INSERT INTO  db2inst1.votes VALUES (?, ?)"
+       params = data.get("voter_id"),data.get("vote")
+       prep_stmt = ibm_db.prepare(conn, insert_sql)
+       ibm_db.execute(prep_stmt, params)
+       
        print ("row inserted into DB")
-       cur.close()
 
     except Exception as e:
-       conn.rollback()
-       cur.close()
-       print ("error inserting into postgres")
+       print ("error inserting into DB2")
        print (str(e))
 
     try:
-      conn.close()
+       ibm_db.close(conn)
 
     except Exception as e:
-       print ("error closing connection to postgres")
+       print ("error closing connection to DB2")
        print (str(e))
 
 def process_votes():
@@ -103,14 +107,14 @@ def process_votes():
           if (msg != None): 
              print ("reading message from redis")
              msg_dict = json.loads(msg)
-             insert_postgres(msg_dict) 
+             insert_db2(msg_dict) 
           # will look like this
           # {"vote": "a", "voter_id": "71f0caa7172a84eb"}
-          time.sleep(3)        
+          time.sleep(5)        
    
        except Exception as e:
           print(e)
 
 if __name__ == '__main__':
-    create_postgres_table()
+    create_db2_table()
     process_votes()

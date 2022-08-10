@@ -1,4 +1,4 @@
 Redis
 gunicorn
-psycopg2-binary
+ibm-db
 pyLint
