@@ -26,6 +26,8 @@ components:
         value: '50000'
       - name: DB2_DATABASE
         value: SAMPLEDB
+      - name: DB2_SCHEMA
+        value: team1
       - name: DB2_USER
         value: db2inst1
       - name: DB2_PASSWORD

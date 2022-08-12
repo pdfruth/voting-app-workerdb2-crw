@@ -6,6 +6,8 @@ import time
 import ibm_db
 import json
 
+db2_schema=os.environ.get('DB2_SCHEMA', 'team1')
+
 def get_redis():
    redishost = os.environ.get('REDIS_HOST', 'new-redis')
    redispassword = os.environ.get('REDIS_PASSWORD', 'password')
@@ -54,7 +56,8 @@ def create_db2_table():
        print (str(e)) 
 
     try:
-       ibm_db.exec_immediate(conn, "CREATE TABLE IF NOT EXISTS votes (id VARCHAR(255) NOT NULL, vote VARCHAR(255) NOT NULL)")
+       cmd = ("CREATE TABLE IF NOT EXISTS {0}.votes (id VARCHAR(255) NOT NULL, vote VARCHAR(255) NOT NULL)").format(db2_schema)
+       ibm_db.exec_immediate(conn, cmd)
        print ("votes table created") 
 
     except Exception as e:
@@ -79,7 +82,7 @@ def insert_db2(data):
 
 
     try:
-       insert_sql = "INSERT INTO  db2inst1.votes VALUES (?, ?)"
+       insert_sql = ("INSERT INTO {0}.votes VALUES (?, ?)").format(db2_schema)
        params = data.get("voter_id"),data.get("vote")
        prep_stmt = ibm_db.prepare(conn, insert_sql)
        ibm_db.execute(prep_stmt, params)
