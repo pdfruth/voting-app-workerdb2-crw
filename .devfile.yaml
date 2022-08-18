@@ -20,6 +20,12 @@ components:
         value: new-redis.pdf-voting-app-demo.svc.cluster.local
       - name: REDIS_PASSWORD
         value: admin
+      - name: WHICH_DBM # DB2 or POSTGRES
+        value: DB2
+      - name: DB2_ACCESS # ODBC or REST
+        value: ODBC
+      - name: DB2_REST_APIURL
+        value: ''
       - name: DB2_HOSTNAME
         value: localhost
       - name: DB2_PORT
