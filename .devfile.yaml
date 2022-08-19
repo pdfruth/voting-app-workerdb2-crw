@@ -17,7 +17,7 @@ components:
     image: 'installer.internal.net:5000/l4a/plugin-java8-rhel8:2.15-l4a'
     env:
       - name: REDIS_HOST
-        value: new-redis.pdf-voting-app-demo.svc.cluster.local
+        value: redis.voting-app-demo.svc.cluster.local
       - name: REDIS_PASSWORD
         value: admin
       - name: WHICH_DBM # DB2 or POSTGRES
